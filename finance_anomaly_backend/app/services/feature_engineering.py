@@ -38,3 +38,37 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     df["amount_vs_7d_avg"] = df["abs_amount"] / (df["rolling_7_day_avg"] + 1)
     df = df.reset_index()
 
+    # Frequency features
+    if "merchant" in df.columns:
+        merchant_counts = df["merchant"].value_counts()
+        df["merchant_frequency"] = df["merchant"].map(merchant_counts).fillna(0).astype(int)
+    else:
+        df["merchant_frequency"] = 0
+
+    category_counts = df["category"].value_counts()
+    df["category_frequency"] = df["category"].map(category_counts).fillna(0).astype(int)
+
+    # Category-specific Z-score
+    df["category_mean"] = df.groupby("category")["abs_amount"].transform("mean")
+    df["category_std"] = df.groupby("category")["abs_amount"].transform("std").fillna(0)
+    df["amount_zscore"] = (df["abs_amount"] - df["category_mean"]) / (df["category_std"] + 1)
+
+    return df
+
+
+def get_feature_matrix(df: pd.DataFrame) -> np.ndarray:
+    feature_cols = [
+        "abs_amount",
+        "log_amount",
+        "hour_sin",
+        "hour_cos",
+        "days_since_last_transaction",
+        "rolling_7_day_spend",
+        "amount_vs_7d_avg",
+        "amount_zscore",
+        "merchant_frequency",
+        "category_frequency",
+    ]
+    matrix = df[feature_cols].values.astype(np.float64)
+    matrix = np.nan_to_num(matrix, nan=0.0, posinf=0.0, neginf=0.0)
+    return matrix
