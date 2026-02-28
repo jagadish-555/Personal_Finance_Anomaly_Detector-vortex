@@ -103,3 +103,38 @@ elif page == "📤 Upload":
         df = parse_csv(content)
         df = categorize_dataframe(df)
         save_user_transactions(st.session_state.user_id, df.to_dict("records"))
+        st.success(f"Saved {len(df)} transactions")
+
+elif page == "🧠 Analyze":
+    st.title("Run AI Analysis")
+    if not st.session_state.user_id: st.warning("Login required"); st.stop()
+    
+    threshold = st.slider("Risk Threshold", 0, 100, st.session_state.threshold)
+    if st.button("Analyze"):
+        txns = get_user_transactions(st.session_state.user_id)
+        if not txns: st.error("No data")
+        else:
+            df = pd.DataFrame(txns)
+            if 'date' in df.columns: df['date'] = pd.to_datetime(df['date'])
+            df_feat = engineer_features(df)
+            base = compute_baseline(df_feat)
+            df_res = detect_anomalies(df_feat, base, st.session_state.user_id, threshold)
+            
+            save_df = df_res.copy()
+            if 'date' in save_df.columns: save_df['date'] = save_df['date'].dt.strftime("%Y-%m-%d %H:%M:%S")
+            save_user_transactions(st.session_state.user_id, save_df.to_dict("records"))
+            
+            expls = generate_explanations(df_res, base)
+            st.success(f"Found {df_res['is_anomaly'].sum()} anomalies")
+            for e in expls:
+                st.write(f"- Txn {e.transaction_id} Risk: {e.risk_score}")
+                for msg in e.explanations: st.write("  -", msg)
+
+elif page == "📋 History":
+    st.title("Transaction History")
+    if not st.session_state.user_id: st.warning("Login required"); st.stop()
+    
+    txns = get_user_transactions(st.session_state.user_id)
+    if txns:
+        df = pd.DataFrame(txns)
+        st.dataframe(df)
