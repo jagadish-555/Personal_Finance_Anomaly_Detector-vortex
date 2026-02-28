@@ -94,12 +94,157 @@ We follow a 3-layer approach:
 - Rule-based keyword matching
 - Expandable ML classification
 
-### 3️Hybrid Anomaly Detection
-- Z-score deviation
-- Rolling average comparison
-- New merchant detection
-- Frequency spike detection
-- Isolation Forest (optional)
+# 🔍 __Hybrid Anomaly Detection Framework__
+
+Our system detects anomalies across multiple behavioral dimensions to provide **explainable financial intelligence**.
+
+
+---
+
+## 1️ __Amount-Based Anomalies__
+
+Detects unusual transaction amounts relative to user history.
+
+- **Z-Score Deviation**  
+  Flags transactions significantly higher or lower than personal average.
+
+- **Category-Based Deviation**  
+  Compares transaction amount against category-specific historical mean.
+
+- **Extreme Outlier Detection**  
+  Identifies transactions far outside normal financial range.
+
+
+---
+
+## 2️ __Frequency-Based Anomalies__
+
+Detects abnormal transaction bursts or activity spikes.
+
+- **Transaction Burst Detection**  
+  Multiple transactions within a short time window.
+
+- **Daily/Weekly Spike Detection**  
+  Sudden increase in transaction count compared to rolling average.
+
+- **Rapid Repeat Merchant Activity**  
+  Same merchant used multiple times within minutes.
+
+
+---
+
+## 3️ __Merchant-Based Anomalies__
+
+Detects irregular merchant behavior.
+
+- **New Merchant Detection**  
+  First-time transaction with a merchant.
+
+- **Rare Merchant Usage**  
+  Merchant historically used very infrequently.
+
+- **Merchant Category Mismatch**  
+  Merchant category inconsistent with usual spending behavior.
+
+
+---
+
+## 4️ __Behavioral Shift Anomalies__
+
+Detects long-term spending pattern changes.
+
+- **Monthly Category Spike**  
+  Significant increase compared to last 3-month average.
+
+- **Budget Drift Detection**  
+  Category spending exceeds normal proportion.
+
+- **Income-to-Expense Ratio Shift**  
+  Sudden imbalance in spending behavior.
+
+
+---
+
+## 5️ __Location-Based Anomalies__
+
+Detects geographic irregularities.
+
+- **New Location Detection**  
+  First transaction from a new city or region.
+
+- **Geo-Deviation Detection**  
+  Transaction outside normal geographic radius.
+
+- **Impossible Travel Detection**  
+  Transactions occurring in distant cities within unrealistic time gaps.
+
+
+---
+
+## 6️ __Time-Based Anomalies__
+
+Detects unusual transaction timing behavior.
+
+- **Unusual Time of Day**  
+  Transactions outside normal activity hours.
+
+- **Weekend/Weekday Behavior Shift**  
+  Spending inconsistent with historical weekday patterns.
+
+- **Night-Time High-Value Transactions**  
+  High-risk activity during late hours.
+
+
+---
+
+## 7️ __Transaction Pattern Anomalies__
+
+Detects structured suspicious behavior.
+
+- **Round Number Pattern Detection**  
+  Repeated transactions of identical rounded amounts.
+
+- **Split Transaction Pattern**  
+  Large payment divided into multiple smaller transactions.
+
+- **Micro-Transaction Clusters**  
+  Multiple small deductions within short duration.
+
+
+---
+
+## 8️ __Machine Learning-Based Anomalies (Optional Enhancement)__
+
+- **Isolation Forest Detection**  
+  Detects multi-dimensional outliers in feature space.
+
+- **Feature-Space Outlier Scoring**  
+  Identifies abnormal patterns across combined behavioral features.
+
+- **Composite Risk Score (0–100)**  
+  Weighted anomaly scoring model.
+
+
+---
+
+# __Final Composite Risk Scoring__
+
+Each anomaly dimension contributes to a final **Risk Score (0–100)**:
+
+- Amount Deviation  
+- Frequency Spike  
+- Merchant Novelty  
+- Behavioral Shift  
+- Location Irregularity  
+- Time-Based Risk  
+
+Only transactions exceeding a defined threshold generate alerts to minimize false positives.
+
+
+---
+
+> The goal is not just anomaly detection —  
+> but **multi-dimensional, explainable financial behavior intelligence.**
 
 Focus: **Explainable AI**, not black-box alerts.
 
