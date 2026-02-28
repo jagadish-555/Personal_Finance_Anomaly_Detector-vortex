@@ -85,16 +85,16 @@ The real problem is:
 
 We follow a 3-layer approach:
 
-### 1️⃣ Data Normalization
+### 1️Data Normalization
 - Parse CSV & PDF
 - Standardize columns
 - Clean transaction descriptions
 
-### 2️⃣ Intelligent Categorization
+### 2️Intelligent Categorization
 - Rule-based keyword matching
 - Expandable ML classification
 
-### 3️⃣ Hybrid Anomaly Detection
+### 3️Hybrid Anomaly Detection
 - Z-score deviation
 - Rolling average comparison
 - New merchant detection
@@ -145,32 +145,32 @@ This transforms raw data into **financial intelligence**.
 
 ## __Key Features__
 
-### 📂 Multi-Format Parsing
+### Multi-Format Parsing
 - CSV upload
 - PDF parsing
 - Data cleaning
 
-### 🏷 Automatic Categorization
+### Automatic Categorization
 - Merchant keyword detection
 - ML-based classification (optional)
 
-### 🔍 Hybrid Anomaly Detection
+### Hybrid Anomaly Detection
 - Statistical deviation
 - Behavioral shift detection
 - Frequency spike detection
 - New merchant flagging
 
-### 🎯 Explainable Risk Scoring
+### Explainable Risk Scoring
 - Composite anomaly score
 - Clear reasoning for alerts
 
-### 📊 Interactive Dashboard
+### Interactive Dashboard
 - Spending timeline
 - Category breakdown
 - Highlighted anomalies
 - Monthly comparisons
 
-### 🔔 Smart Notification System
+### Smart Notification System
 - Threshold-based alerts
 - Reduced false positives
 
