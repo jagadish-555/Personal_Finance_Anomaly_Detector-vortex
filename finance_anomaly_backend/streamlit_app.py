@@ -33,3 +33,38 @@ def _save_json(data, file_path):
 def get_user_transactions(user_id):
     return _load_json(TXNS_FILE).get(user_id, [])
 
+def save_user_transactions(user_id, data):
+    txns = _load_json(TXNS_FILE)
+    txns[user_id] = data
+    _save_json(txns, TXNS_FILE)
+
+def create_user(name, email):
+    users = _load_json(USERS_FILE)
+    for uid, udata in users.items():
+        if udata.get("email") == email: return uid, udata
+    uid = str(uuid.uuid4())
+    users[uid] = {"name": name, "email": email}
+    _save_json(users, USERS_FILE)
+    return uid, users[uid]
+
+st.set_page_config(page_title="Vortex Finance", page_icon="🔮", layout="wide")
+
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+.stApp { background: radial-gradient(circle at 20% 20%, #1e1e2e 0%, #11111b 50%, #09090b 100%); }
+div[data-testid="stMetric"] { background: rgba(255, 255, 255, 0.03); padding: 24px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.3s; }
+.stButton>button { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 10px; font-weight: 600; border: none; }
+.stButton>button:hover { filter: brightness(1.2); }
+</style>
+""", unsafe_allow_html=True)
+
+if "user_id" not in st.session_state: st.session_state.user_id = None
+if "threshold" not in st.session_state: st.session_state.threshold = 70
+
+with st.sidebar:
+    st.markdown("<h1 style='color: #6366f1; text-align: center'>VORTEX</h1>", unsafe_allow_html=True)
+    page = st.radio("Navigate", ["🏠 Dashboard", "📤 Upload", "🧠 Analyze", "📋 History"])
+    
+    if st.session_state.user_id:
