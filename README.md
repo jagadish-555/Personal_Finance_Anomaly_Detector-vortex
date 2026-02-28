@@ -46,11 +46,7 @@ The system must convert transaction data into **proactive financial awareness**.
 
 ## __Target Users__
 
-- Students  
-- Working professionals  
-- Freelancers  
-- Multi-bank users  
-- Anyone tracking personal finance  
+Everyone Who does transaction through online mode or withdraw cash from ATM's
 
 
 ---
