@@ -30,3 +30,18 @@ export default function Hero() {
             </motion.p>
 
             <motion.div
+                className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full sm:w-auto relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+                <Link to="/dashboard" className="w-full sm:w-auto bg-indigo-600 text-white px-8 py-4 rounded-full text-[17px] font-semibold hover:bg-indigo-500 transition-colors inline-block shadow-[0_0_30px_rgba(99,102,241,0.3)] hover:shadow-[0_0_40px_rgba(99,102,241,0.5)]">
+                    Get Started
+                </Link>
+                <a href="#how-it-works" className="w-full sm:w-auto bg-white/5 backdrop-blur-md text-white px-8 py-4 rounded-full text-[17px] font-semibold border border-white/10 hover:bg-white/10 transition-colors inline-block">
+                    Book a Demo
+                </a>
+            </motion.div>
+        </section>
+    );
+}
