@@ -1,4 +1,4 @@
-# 💳 Personal Finance Anomaly Detector
+# Personal Finance Anomaly Detector
 
 > Turning transaction data into actionable financial intelligence.
 
