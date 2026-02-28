@@ -25,3 +25,11 @@ export default function Navbar() {
                 {/* CTA Button Right */}
                 <div className="flex-shrink-0 flex items-center">
                     <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-6 py-2.5 rounded-full text-[15px] font-medium transition-colors border border-white/10 shadow-[0_4px_14px_0_rgba(255,255,255,0.05)]">
+                        Try Now
+                    </button>
+                </div>
+
+            </div>
+        </nav>
+    );
+}
