@@ -29,3 +29,4 @@ finance_anomaly_backend/app/ml_models/*.pkl
 # ── Environment variables ────────────────────────────────────────────────────
 .env
 .env.*
+DEPLOYMENT.md
