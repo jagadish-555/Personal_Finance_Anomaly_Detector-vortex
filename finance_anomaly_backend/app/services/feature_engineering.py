@@ -28,3 +28,13 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     df["rolling_7_day_spend"] = (
         df["abs_amount"]
         .rolling("7D", min_periods=1)
+        .sum()
+    )
+    df["rolling_7_day_avg"] = (
+        df["abs_amount"]
+        .rolling("7D", min_periods=1)
+        .mean()
+    )
+    df["amount_vs_7d_avg"] = df["abs_amount"] / (df["rolling_7_day_avg"] + 1)
+    df = df.reset_index()
+
