@@ -643,9 +643,9 @@ Hybrid approach chosen for:
 
 # 1️⃣2️⃣ Demo & Video
 
-- Live Demo Link: (Add link)  
-- Demo Video Link: (Add link)  
-- GitHub Repository: (Add link)  
+- Live Demo Link: https://jagadish-555-person-finance-anomaly-backendstreamlit-app-2zojc0.streamlit.app/
+- Demo Video Link: https://drive.google.com/file/d/1AaEn7InrQLz1HQZGrHYMruzp6PNNFOjT/view?usp=sharing)
+- GitHub Repository: https://github.com/jagadish-555/Personal_Finance_Anomaly_Detector-vortex 
 
 ---
 
