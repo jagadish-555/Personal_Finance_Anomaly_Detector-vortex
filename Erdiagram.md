@@ -1,56 +1,43 @@
+# Entity-Relationship Diagram
+
+> Reflects the actual database schema implemented in `finance_anomaly_backend/app/models.py`.
+
 ```mermaid
 erDiagram
 
-    USER {
-        string user_id PK
+    USERS {
+        string id PK "UUID"
         string name
-        string email
-        string password_hash
+        string email UK
         datetime created_at
     }
 
-    ACCOUNT {
-        string account_id PK
-        string user_id FK
-        string account_type
-        float balance
-        datetime created_at
-    }
-
-    TRANSACTION {
-        string transaction_id PK
-        string account_id FK
-        string category_id FK
+    TRANSACTIONS {
+        int id PK "auto-increment"
+        string user_id FK "→ users.id"
+        datetime date
         float amount
-        string type
-        string description
-        datetime transaction_date
-        boolean is_anomalous
-    }
-
-    CATEGORY {
-        string category_id PK
-        string name
-        string type
-    }
-
-    ANOMALY {
-        string anomaly_id PK
-        string transaction_id FK
+        string merchant
+        text description
+        string category
+        int hour
+        int day_of_week
         float anomaly_score
-        string detection_method
-        datetime detected_at
+        boolean is_anomaly
+        json explanations
+        datetime created_at
     }
 
-    MODEL_LOG {
-        string log_id PK
-        string model_version
-        float accuracy
-        datetime trained_at
+    USER_BASELINES {
+        int id PK "auto-increment"
+        string user_id FK "→ users.id (unique)"
+        json category_stats
+        json merchant_stats
+        float weekly_avg_spend
+        float weekly_std_spend
+        datetime updated_at
     }
 
-    USER ||--o{ ACCOUNT : owns
-    ACCOUNT ||--o{ TRANSACTION : records
-    CATEGORY ||--o{ TRANSACTION : classifies
-    TRANSACTION ||--o| ANOMALY : flagged_as
+    USERS ||--o{ TRANSACTIONS : "has many"
+    USERS ||--o| USER_BASELINES : "has one"
 ```

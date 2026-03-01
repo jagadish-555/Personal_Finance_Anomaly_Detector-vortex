@@ -5,6 +5,69 @@
 
 ---
 
+## Quick Start
+
+```bash
+# 1. Enter the backend directory and activate the virtual environment
+cd finance_anomaly_backend
+source .venv/bin/activate        # macOS/Linux
+pip install -r requirements.txt  # first time only
+
+# 2. Start the FastAPI backend (Terminal 1)
+uvicorn app.main:app --reload --port 8000
+
+# 3. Start the Streamlit frontend (Terminal 2)
+streamlit run streamlit_app.py
+```
+
+- **Backend API:** http://localhost:8000/docs
+- **Streamlit UI:** http://localhost:8501
+
+---
+
+## Project Structure
+
+```
+├── README.md                          ← You are here
+├── Erdiagram.md                       ← Database ER diagram (Mermaid)
+├── .gitignore
+│
+├── finance_anomaly_backend/           ← Main application
+│   ├── requirements.txt               ← Python dependencies
+│   ├── streamlit_app.py               ← Streamlit frontend (806 lines)
+│   ├── finance_anomaly.db             ← SQLite database (auto-created)
+│   │
+│   └── app/                           ← FastAPI backend package
+│       ├── main.py                    ← App entry point, routers, lifespan
+│       ├── database.py                ← SQLAlchemy engine & session
+│       ├── models.py                  ← ORM models (User, Transaction, UserBaseline)
+│       ├── schemas.py                 ← Pydantic request/response schemas
+│       │
+│       ├── routes/
+│       │   ├── upload.py              ← POST /upload (CSV/PDF parsing)
+│       │   └── analyze.py             ← POST /analyze, GET /transactions
+│       │
+│       ├── services/
+│       │   ├── parser.py              ← CSV & PDF bank statement parsing
+│       │   ├── categorizer.py         ← Keyword-based transaction categorization
+│       │   ├── feature_engineering.py ← Feature extraction for ML
+│       │   ├── baseline.py            ← Per-user behavioral baseline
+│       │   ├── anomaly_engine.py      ← Hybrid detection (statistical + Isolation Forest)
+│       │   └── explanation_engine.py  ← Human-readable anomaly explanations
+│       │
+│       ├── utils/
+│       │   └── helpers.py             ← Currency cleaning, merchant extraction, etc.
+│       │
+│       └── ml_models/                 ← Persisted per-user Isolation Forest models (.pkl)
+│
+└── notebooks/                         ← Research & demo notebooks
+    ├── final_collab.ipynb             ← Standalone Colab prototype
+    └── pipeline_demo.ipynb            ← Full backend pipeline walkthrough
+```
+
+
+---
+
 # __Problem Statement__
 
 With the rise of digital banking, users generate massive transaction data across bank accounts, UPI apps, and credit cards.
