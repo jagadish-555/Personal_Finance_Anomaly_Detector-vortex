@@ -198,9 +198,18 @@ def api_post(path: str, json_body: dict = None, files=None, params: dict = None)
         return None, str(e)
 
 
+@st.cache_data(ttl=30, show_spinner=False)
 def check_backend() -> bool:
+    """Cached backend health check — re-polls at most every 30 seconds."""
     data, err = api_get("/health")
     return data is not None and data.get("status") == "healthy"
+
+
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_transactions(user_id: str):
+    """Cached transaction fetch — avoids redundant API calls on every rerun."""
+    data, err = api_get(f"/transactions/{user_id}")
+    return data, err
 
 
 def risk_color(score: float) -> str:
@@ -231,6 +240,8 @@ if "analysis_result" not in st.session_state:
     st.session_state.analysis_result = None
 if "transactions" not in st.session_state:
     st.session_state.transactions = None
+if "threshold" not in st.session_state:
+    st.session_state.threshold = 70
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -433,6 +444,8 @@ elif page == "📤 Upload Statement":
                 st.error(f"Upload failed: {err}")
             else:
                 st.success(f"✅ {data['transactions_parsed']} transactions uploaded successfully!")
+                fetch_transactions.clear()
+                st.session_state.transactions = None
                 st.json(data)
 
     with tab_pdf:
@@ -455,6 +468,8 @@ elif page == "📤 Upload Statement":
                 st.error(f"Upload failed: {err}")
             else:
                 st.success(f"✅ {data['transactions_parsed']} transactions uploaded!")
+                fetch_transactions.clear()
+                st.session_state.transactions = None
                 st.json(data)
 
     with tab_sample:
@@ -505,6 +520,7 @@ elif page == "📤 Upload Statement":
                 st.error(f"Upload failed: {err}")
             else:
                 st.success(f"✅ {data['transactions_parsed']} sample transactions uploaded! Now go to **Run Analysis**.")
+                fetch_transactions.clear()
                 st.session_state.transactions = None  # Reset cache
 
 
@@ -523,21 +539,23 @@ elif page == "🧠 Run Analysis":
     st.markdown(f"Running analysis for: **{st.session_state.user_name}**")
     st.markdown("---")
 
-    # Controls
-    col_ctrl1, col_ctrl2 = st.columns([2, 1])
-    with col_ctrl1:
-        threshold = st.slider(
-            "🎚️ Risk Score Threshold",
-            min_value=0,
-            max_value=100,
-            value=70,
-            step=5,
-            help="Transactions with risk score above this value are flagged as anomalies. Lower = more sensitive.",
-        )
-        st.caption(f"Current: **{threshold}** — {risk_label(threshold)} boundary")
-    with col_ctrl2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        run_btn = st.button("▶️ Run Analysis", use_container_width=True, type="primary")
+    # Controls — wrapped in a form so the slider doesn't trigger a rerun on every drag
+    with st.form(key="analysis_form"):
+        col_ctrl1, col_ctrl2 = st.columns([2, 1])
+        with col_ctrl1:
+            threshold = st.slider(
+                "🎚️ Risk Score Threshold",
+                min_value=0,
+                max_value=100,
+                value=st.session_state.threshold,
+                step=5,
+                help="Transactions with risk score above this value are flagged as anomalies. Lower = more sensitive.",
+            )
+            st.caption(f"Current: **{threshold}** — {risk_label(threshold)} boundary")
+        with col_ctrl2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            run_btn = st.form_submit_button("▶️ Run Analysis", use_container_width=True, type="primary")
+    st.session_state.threshold = threshold
 
     if run_btn:
         with st.spinner("Running hybrid anomaly detection pipeline..."):
@@ -561,8 +579,9 @@ elif page == "🧠 Run Analysis":
             st.error(f"Analysis failed: {err}")
         else:
             st.session_state.analysis_result = result
-            # Refresh transactions cache
-            txns, _ = api_get(f"/transactions/{st.session_state.user_id}")
+            # Invalidate cached transaction fetch and refresh
+            fetch_transactions.clear()
+            txns, _ = fetch_transactions(st.session_state.user_id)
             if txns:
                 st.session_state.transactions = txns
             st.success("✅ Analysis complete!")
@@ -699,7 +718,9 @@ elif page == "📋 Transactions":
         anomalies_only = st.toggle("🚨 Show Anomalies Only", value=False)
     with col_f2:
         if st.button("🔄 Refresh", use_container_width=True):
+            fetch_transactions.clear()
             st.session_state.transactions = None
+            st.rerun()
     with col_f3:
         if st.button("🗑️ Clear Transactions", use_container_width=True):
             with st.spinner("Clearing history..."):
@@ -709,6 +730,7 @@ elif page == "📋 Transactions":
                 if err:
                     st.error(f"Failed to clear: {err}")
                 else:
+                    fetch_transactions.clear()
                     st.session_state.transactions = None
                     st.session_state.analysis_result = None
                     st.success("Transactions cleared!")
@@ -717,10 +739,14 @@ elif page == "📋 Transactions":
     # Fetch transactions
     if not st.session_state.transactions or anomalies_only:
         with st.spinner("Loading transactions..."):
-            txns, err = api_get(
-                f"/transactions/{st.session_state.user_id}",
-                params={"anomalies_only": str(anomalies_only).lower()},
-            )
+            if anomalies_only:
+                # anomalies_only needs a fresh parameterized call
+                txns, err = api_get(
+                    f"/transactions/{st.session_state.user_id}",
+                    params={"anomalies_only": "true"},
+                )
+            else:
+                txns, err = fetch_transactions(st.session_state.user_id)
         if err:
             st.error(f"Failed to load transactions: {err}")
             st.stop()
