@@ -68,3 +68,38 @@ with st.sidebar:
     page = st.radio("Navigate", ["🏠 Dashboard", "📤 Upload", "🧠 Analyze", "📋 History"])
     
     if st.session_state.user_id:
+        st.write(f"Logged in as **{st.session_state.user_name}**")
+        if st.button("Log Out"):
+            st.session_state.user_id = None
+            st.rerun()
+    else:
+        with st.expander("👤 Login"):
+            name = st.text_input("Name")
+            email = st.text_input("Email")
+            if st.button("Login") and name and email:
+                uid, udata = create_user(name, email)
+                st.session_state.user_id = uid
+                st.session_state.user_name = udata["name"]
+                st.rerun()
+
+if page == "🏠 Dashboard":
+    st.title("Vortex Finance Intelligence")
+    if st.session_state.user_id:
+        txns = get_user_transactions(st.session_state.user_id)
+        if txns:
+            df = pd.DataFrame(txns)
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Transactions", len(df))
+            c2.metric("Total Spend", f"₹{df['amount'].sum():,.0f}")
+            c3.metric("Anomalies", df.get('is_anomaly', pd.Series([False]*len(df))).sum())
+
+elif page == "📤 Upload":
+    st.title("Upload Statement")
+    if not st.session_state.user_id: st.warning("Login required"); st.stop()
+    
+    file = st.file_uploader("Upload CSV", type=["csv"])
+    if file and st.button("Process"):
+        content = file.getvalue()
+        df = parse_csv(content)
+        df = categorize_dataframe(df)
+        save_user_transactions(st.session_state.user_id, df.to_dict("records"))
