@@ -13,7 +13,9 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
 
 # Copy requirements and install
 COPY finance_anomaly_backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir streamlit uvicorn
 
 # Copy the rest of the application
 COPY finance_anomaly_backend/ /app/
