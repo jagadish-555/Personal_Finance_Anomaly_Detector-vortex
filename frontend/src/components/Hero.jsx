@@ -18,3 +18,15 @@ export default function Hero() {
                 <h1 className="text-[56px] leading-[1.05] md:text-[80px] lg:text-[100px] font-bold text-white tracking-[-0.04em] mb-8">
                     Detect unusual spending before it becomes a problem.
                 </h1>
+            </motion.div>
+
+            <motion.p
+                className="text-xl md:text-[22px] text-gray-400 max-w-[640px] mx-auto leading-[1.6] mb-12 font-medium relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+                AI-powered transaction monitoring that alerts you to suspicious, unexpected, or abnormal financial behavior instantly.
+            </motion.p>
+
+            <motion.div
