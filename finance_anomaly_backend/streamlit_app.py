@@ -700,6 +700,19 @@ elif page == "📋 Transactions":
     with col_f2:
         if st.button("🔄 Refresh", use_container_width=True):
             st.session_state.transactions = None
+    with col_f3:
+        if st.button("🗑️ Clear Transactions", use_container_width=True):
+            with st.spinner("Clearing history..."):
+                # Call endpoint to delete transactions for this user
+                # We'll need to check if /transactions/{user_id} supports DELETE
+                _, err = api_post(f"/transactions/{st.session_state.user_id}/clear")
+                if err:
+                    st.error(f"Failed to clear: {err}")
+                else:
+                    st.session_state.transactions = None
+                    st.session_state.analysis_result = None
+                    st.success("Transactions cleared!")
+                    st.rerun()
 
     # Fetch transactions
     if not st.session_state.transactions or anomalies_only:

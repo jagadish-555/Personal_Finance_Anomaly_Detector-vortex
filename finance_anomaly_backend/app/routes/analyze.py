@@ -121,3 +121,15 @@ def _update_transaction_scores(db: Session, df: pd.DataFrame, anomaly_results: l
         txn.explanations = explanation_map.get(txn.id) if txn.is_anomaly else None
 
     db.commit()
+
+
+@router.post("/transactions/{user_id}/clear")
+def clear_transactions(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User {user_id} not found")
+
+    db.query(Transaction).filter(Transaction.user_id == user_id).delete()
+    db.commit()
+    return {"status": "success", "message": f"All transactions for user {user_id} cleared"}
+
