@@ -138,3 +138,5 @@ elif page == "📋 History":
     if txns:
         df = pd.DataFrame(txns)
         st.dataframe(df)
+    else:
+        st.info("Empty")
