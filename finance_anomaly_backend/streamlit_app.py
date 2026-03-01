@@ -9,6 +9,7 @@ Make sure the FastAPI backend is running:
 """
 
 import json
+import os
 import time
 from io import StringIO
 
@@ -20,7 +21,14 @@ import streamlit as st
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-API_BASE = "http://127.0.0.1:8000"
+# Read API_BASE from Streamlit secrets (cloud) → env var → local default
+# On Streamlit Cloud: set API_BASE in app Secrets as: API_BASE = "https://your-api.onrender.com"
+# On Render / local: falls back to localhost
+_default_api = "http://127.0.0.1:8000"
+try:
+    API_BASE = st.secrets.get("API_BASE", os.environ.get("API_BASE", _default_api)).rstrip("/")
+except Exception:
+    API_BASE = os.environ.get("API_BASE", _default_api).rstrip("/")
 st.set_page_config(
     page_title="Vortex Finance | AI Anomaly Detector",
     page_icon="🔮",
