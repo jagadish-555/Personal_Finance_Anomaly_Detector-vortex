@@ -4,10 +4,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Using --fix-missing and removing software-properties-common which is often not needed in slim
+RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
-    software-properties-common \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install
