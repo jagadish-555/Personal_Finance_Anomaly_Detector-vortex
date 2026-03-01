@@ -28,9 +28,10 @@ EXPOSE 8501
 ENV PATH="/home/root/.local/bin:${PATH}"
 
 # Create a start script to run both processes
+# Use Render's dynamic $PORT for Streamlit (the public-facing UI)
 RUN echo '#!/bin/bash\n\
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &\n\
-python -m streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0\n\
+python -m streamlit run streamlit_app.py --server.port ${PORT:-8501} --server.address 0.0.0.0\n\
 ' > /app/start.sh && chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]
