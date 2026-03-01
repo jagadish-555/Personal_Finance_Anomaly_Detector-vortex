@@ -99,7 +99,11 @@ def parse_csv(file_bytes: bytes) -> pd.DataFrame:
     col_map = _resolve_columns(df.columns.tolist())
     df = df.rename(columns=col_map)
 
-    _validate_required_columns(df, ["date", "description", "amount"])
+    _validate_required_columns(df, ["date", "amount"])
+
+    # Auto-create description if the column is missing
+    if "description" not in df.columns:
+        df["description"] = ""
 
     # Clean and merge split Debit/Credit columns
     amount_vals = df["amount"].apply(clean_currency)
@@ -286,20 +290,24 @@ def parse_pdf(file_bytes: bytes) -> pd.DataFrame:
 
 def _resolve_columns(header: list[str]) -> dict[str, str]:
     mapping: dict[str, str] = {}
+    used_headers: set[str] = set()
+
     for canonical, aliases in _COLUMN_ALIASES.items():
-        found_target = False
         for h in header:
+            if h in used_headers:
+                continue
             h_clean = h.lower().replace(" ", "_")
-            if any(alias in h_clean for alias in aliases):
+            # 1. Exact match (most reliable)
+            if h_clean in aliases:
                 mapping[h] = canonical
-                found_target = True
+                used_headers.add(h)
                 break
-        if not found_target:
-            # Fallback exact word
-            for h in header:
-                if any(h.lower().strip() == alias for alias in aliases):
-                    mapping[h] = canonical
-                    break
+            # 2. Substring match — only for aliases longer than 3 chars to avoid
+            #    false positives (e.g. "cr" matching inside "description")
+            if any(alias in h_clean for alias in aliases if len(alias) > 3):
+                mapping[h] = canonical
+                used_headers.add(h)
+                break
     return mapping
 
 
