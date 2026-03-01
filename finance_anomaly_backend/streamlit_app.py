@@ -32,83 +32,126 @@ st.set_page_config(
 st.markdown("""
     <style>
     /* Google Font Import */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Main Container Glassmorphism */
+    /* Pearl-like background gradient */
     .stApp {
-        background: radial-gradient(circle at 50% 50%, #1a1c2c 0%, #0a0b14 100%);
+        background: radial-gradient(circle at 20% 20%, #1e1e2e 0%, #11111b 50%, #09090b 100%);
     }
 
-    /* Professional Card Style */
-    div.stMetric {
+    /* Modern Card Layout (Shadcn-inspired) */
+    div[data-testid="stMetric"] {
         background: rgba(255, 255, 255, 0.03);
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: transform 0.3s ease, background 0.3s ease;
+        padding: 24px !important;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    div.stMetric:hover {
-        transform: translateY(-5px);
+    div[data-testid="stMetric"]:hover {
         background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(0, 150, 255, 0.3);
+        border-color: #6366f1;
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
     }
 
-    /* Sidebar Styling */
+    /* Sidebar Refinement */
     section[data-testid="stSidebar"] {
-        background-color: #0f111a;
+        background-color: #0c0c12;
         border-right: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* Button Styling */
+    /* Buttons with Glow Effect */
     .stButton>button {
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-weight: 600;
-        padding: 10px 20px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+        letter-spacing: -0.01em;
+        padding: 12px 24px;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+        width: 100%;
     }
     .stButton>button:hover {
         transform: scale(1.02);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        border: none;
-        color: white;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        filter: brightness(1.1);
     }
 
-    /* Title Animation */
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .main-title {
-        font-size: 3rem;
-        font-weight: 800;
-        background: linear-gradient(to right, #ffffff, #6366f1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: fadeInUp 0.8s ease-out;
-    }
-
-    /* Table Styling */
-    div[data-testid="stExpander"] {
-        background: rgba(255, 255, 255, 0.02);
+    /* Tabs Styling (Pearl Finish) */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        padding: 4px;
         border: 1px solid rgba(255, 255, 255, 0.05);
     }
+    .stTabs [data-baseweb="tab"] {
+        height: 40px;
+        border-radius: 8px;
+        border: none;
+        transition: all 0.2s ease;
+        padding: 8px 16px;
+    }
+    .stTabs [aria-selected="true"] {
+        background: rgba(99, 102, 241, 0.15) !important;
+        color: #818cf8 !important;
+    }
+
+    /* Animation Keyframes */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .stMarkdown, .stDataFrame, .stPlotlyChart {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Custom Header Styles */
+    .main-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        background: linear-gradient(to bottom right, #fff 30%, #a5b4fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0px;
+    }
     
-    /* Parallax-like floating effect for headers */
-    .parallax-header {
-        background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-        padding: 40px;
-        text-align: center;
-        border-radius: 20px;
-        margin-bottom: 30px;
-        border: 1px solid rgba(255,255,255,0.05);
+    /* Input Fields (Shadcn style) */
+    .stTextInput>div>div>input {
+        background-color: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e2e8f0;
+        transition: border-color 0.2s ease;
+    }
+    .stTextInput>div>div>input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 1px #6366f1;
+    }
+
+    /* Expander - Clean Modern Look */
+    .streamlit-expanderHeader {
+        background-color: transparent !important;
+        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+        font-weight: 600 !important;
+    }
+    .streamlit-expanderContent {
+        background-color: rgba(255,255,255,0.01) !important;
+    }
+
+    /* Alert Boxes */
+    div[data-testid="stNotification"] {
+        background-color: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 12px;
+        color: #c7d2fe;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -249,13 +292,15 @@ with st.sidebar:
 
 # ── 1. Dashboard ─────────────────────────────────────────────────────────────
 if page == "🏠 Dashboard":
-    st.title("🏠 Personal Finance Anomaly Detector")
+    st.markdown('<h1 class="main-title">Vortex Finance</h1>', unsafe_allow_html=True)
     st.markdown(
         """
-        Welcome! This system uses **hybrid anomaly detection** (statistical + Isolation Forest ML)
-        to flag unusual transactions in your bank statements.
-        """
+        <p style="font-size: 1.25rem; color: rgba(255,255,255,0.6); margin-top: -10px;">
+        Intelligent anomaly detection for your personal finance.
+        </p>
+        """, unsafe_allow_html=True
     )
+    st.markdown("---")
 
     col1, col2, col3 = st.columns(3)
     with col1:
