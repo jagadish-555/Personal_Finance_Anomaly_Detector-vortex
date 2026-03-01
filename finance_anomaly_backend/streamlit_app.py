@@ -480,8 +480,6 @@ elif page == "📤 Upload Statement":
                 st.session_state.transactions = None
                 st.json(data)
 
-
-
 # ── 3. Run Analysis ────────────────────────────────────────────────────────────
 elif page == "🧠 Run Analysis":
     st.title("🧠 Anomaly Detection Analysis")
