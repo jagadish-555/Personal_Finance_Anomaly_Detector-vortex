@@ -22,10 +22,13 @@ COPY finance_anomaly_backend/ /app/
 EXPOSE 8000
 EXPOSE 8501
 
+# Ensure Streamlit is in PATH (common issue in slim images)
+ENV PATH="/home/root/.local/bin:${PATH}"
+
 # Create a start script to run both processes
 RUN echo '#!/bin/bash\n\
-uvicorn app.main:app --host 0.0.0.0 --port 8000 &\n\
-streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0\n\
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &\n\
+python -m streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0\n\
 ' > /app/start.sh && chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]
