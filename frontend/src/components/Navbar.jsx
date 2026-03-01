@@ -16,3 +16,12 @@ export default function Navbar() {
                 {/* Centered Nav Links */}
                 <div className="hidden md:flex flex-1 justify-center space-x-10">
                     <a href="#features" className="text-[15px] font-medium text-gray-400 hover:text-white transition-colors">Features</a>
+                    <a href="#how-it-works" className="text-[15px] font-medium text-gray-400 hover:text-white transition-colors">How It Works</a>
+                    <a href="#pricing" className="text-[15px] font-medium text-gray-400 hover:text-white transition-colors">Pricing</a>
+                    <a href="#about" className="text-[15px] font-medium text-gray-400 hover:text-white transition-colors">About</a>
+                    <a href="#contact" className="text-[15px] font-medium text-gray-400 hover:text-white transition-colors">Contact</a>
+                </div>
+
+                {/* CTA Button Right */}
+                <div className="flex-shrink-0 flex items-center">
+                    <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-6 py-2.5 rounded-full text-[15px] font-medium transition-colors border border-white/10 shadow-[0_4px_14px_0_rgba(255,255,255,0.05)]">
