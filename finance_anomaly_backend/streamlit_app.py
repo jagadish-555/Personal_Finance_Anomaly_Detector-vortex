@@ -272,7 +272,7 @@ with st.sidebar:
             st.rerun()
     else:
         with st.expander("👤 Create / Multi-User Login", expanded=True):
-            name = st.text_input("Full Name", placeholder="Jagadish")
+            name = st.text_input("Full Name", placeholder="user")
             email = st.text_input("User Email", placeholder="your@email.com")
             if st.button("Access Dashboard", use_container_width=True, disabled=not backend_ok):
                 if name and email:
