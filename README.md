@@ -385,31 +385,326 @@ This transforms raw data into **financial intelligence**.
 
 ---
 
-# __System Architecture__
+---
 
-Bank Statement  
-↓  
-Parsing & Normalization  
-↓  
-Categorization  
-↓  
-Feature Engineering  
-↓  
-Anomaly Detection Engine  
-↓  
-Risk Scoring  
-↓  
-Dashboard & Alerts  
+# 4️⃣ System Architecture
+
+## High-Level Flow
+
+User → Frontend (Streamlit) → Backend (FastAPI) → Anomaly Engine → Database → Response → Dashboard
+
+---
+
+## Architecture Description
+
+The system follows a modular, service-oriented backend architecture:
+
+1. **Frontend (Streamlit)**  
+   - Uploads bank statements (CSV/PDF)  
+   - Displays anomaly results  
+   - Visualizes spending trends and risk scores  
+
+2. **Backend (FastAPI)**  
+   - Handles API requests  
+   - Validates data using Pydantic schemas  
+   - Routes processing to appropriate services  
+
+3. **Processing Layer**
+   - Parsing & Normalization  
+   - Categorization  
+   - Feature Engineering  
+   - Baseline Computation  
+   - Hybrid Anomaly Engine  
+
+4. **Database Layer (SQLite + SQLAlchemy)**
+   - Stores Users  
+   - Stores Transactions  
+   - Stores Behavioral Baselines  
+
+5. **ML Layer**
+   - Isolation Forest (optional enhancement)  
+   - Composite Risk Scoring Engine  
+   - Explainability Engine  
+
+---
+
+# 5️⃣ Database Design
+
+## ER Diagram
+
+(Add ER diagram image here)
+
+---
+
+## ER Diagram Description
+
+### 1️⃣ User
+- user_id (PK)
+- name
+- email
+- created_at
+
+### 2️⃣ Transaction
+- transaction_id (PK)
+- user_id (FK)
+- date
+- amount
+- category
+- description
+- location
+- hour
+- risk_score
+- is_anomaly
+- created_at
+
+Relationship:
+- One User → Many Transactions
+
+### 3️⃣ UserBaseline
+- baseline_id (PK)
+- user_id (FK)
+- avg_spend
+- std_spend
+- category_distribution
+- active_hours_distribution
+
+Relationship:
+- One User → One Baseline
+
+---
+
+# 6️⃣ Dataset Selected
+
+## Dataset Name
+Custom User Bank Statements (CSV / PDF)
+
+## Source
+User-uploaded bank statements
+
+## Data Type
+- Structured CSV  
+- Semi-structured PDF bank statements  
+
+## Selection Reason
+
+- Real-world financial data format  
+- Enables personalized anomaly detection  
+- Reflects real behavioral spending patterns  
+
+## Preprocessing Steps
+
+1. Column standardization  
+2. Currency symbol cleaning  
+3. Merchant extraction  
+4. Date-time parsing  
+5. Category keyword mapping  
+6. Feature generation (amount deviation, hour, frequency, etc.)  
+
+---
+
+# 7️⃣ Model Selected
+
+## Model Name
+Hybrid Statistical + Isolation Forest Model
+
+Using:
+- Z-Score Based Deviation  
+- Behavioral Shift Detection  
+- Frequency Spike Detection  
+- Optional: IsolationForest (Scikit-learn)  
+
+## Selection Reasoning
+
+- Financial data is user-specific  
+- No labeled anomaly data available  
+- Need unsupervised detection  
+- Isolation Forest handles multi-dimensional outliers  
+
+## Alternatives Considered
+
+- One-Class SVM  
+- Local Outlier Factor  
+- Autoencoder (deep learning)  
+- Pure statistical threshold model  
+
+Hybrid approach chosen for:
+- Interpretability  
+- Lower computational cost  
+- Reduced overfitting risk  
+
+## Evaluation Metrics
+
+- Precision  
+- Recall  
+- F1 Score  
+- False Positive Rate  
+- Risk Score Distribution Analysis  
+
+---
+
+# 8️⃣ Technology Stack
+
+## Frontend
+- Streamlit  
+- Plotly  
+- Pandas  
+
+## Backend
+- FastAPI  
+- Uvicorn  
+- Pydantic  
+- SQLAlchemy  
+
+## ML/AI
+- Scikit-learn  
+- Isolation Forest  
+- NumPy  
+- Custom Statistical Engine  
+
+## Database
+- SQLite (development)  
+- PostgreSQL (scalable option)  
+
+## Deployment
+- Render / Railway / AWS (Future-ready)  
+- Docker (optional containerization)  
+
+---
+
+# 9️⃣ API Documentation & Testing
+
+## API Endpoints List
+
+### POST /upload
+- Upload CSV/PDF  
+- Parse & store transactions  
+
+### POST /analyze
+- Run anomaly detection  
+- Generate risk scores  
+
+### GET /transactions
+- Fetch transactions with anomaly flags  
+
+### GET /summary
+- Fetch spending analytics summary  
+
+---
+
 
 
 ---
 
-# __Objective__
+# 🔟 Module-wise Development & Deliverables
 
-Move personal finance from:
+## Checkpoint 1: Research & Planning
+- Literature review  
+- Anomaly detection model comparison  
+- ER diagram design  
 
-**Passive transaction viewing**
+## Checkpoint 2: Backend Development
+- FastAPI setup  
+- Database models  
+- API routing  
 
-to
+## Checkpoint 3: Frontend Development
+- Streamlit dashboard  
+- Upload interface  
+- Visualization panels  
 
-**Proactive behavioral financial monitoring**
+## Checkpoint 4: Model Training
+- Feature engineering  
+- Baseline calculation  
+- Statistical detection engine  
+
+## Checkpoint 5: Model Integration
+- API → ML pipeline integration  
+- Risk scoring logic  
+- Explainability generation  
+
+## Checkpoint 6: Deployment
+- Production-ready server  
+- Database persistence  
+- UI integration  
+
+---
+
+# 1️⃣1️⃣ End-to-End Workflow
+
+1. User uploads bank statement  
+2. Backend parses transactions  
+3. Data is normalized & categorized  
+4. User behavioral baseline computed  
+5. Hybrid anomaly engine evaluates transactions  
+6. Risk score assigned  
+7. Dashboard visualizes flagged anomalies  
+
+---
+
+# 1️⃣2️⃣ Demo & Video
+
+- Live Demo Link: (Add link)  
+- Demo Video Link: (Add link)  
+- GitHub Repository: (Add link)  
+
+---
+
+# 1️⃣3️⃣ Hackathon Deliverables Summary
+
+- Fully functional backend API  
+- Interactive anomaly dashboard  
+- Hybrid anomaly detection engine  
+- Explainable AI layer  
+- Database integration  
+- Modular project architecture  
+
+---
+
+# 1️⃣4️⃣ Team Roles & Responsibilities
+
+| Member Name | Role | Responsibilities |
+|-------------|------|-----------------|
+| Jagadish Ishwar Patil | ML & Backend  
+| Aditya Sinha | Backend and Deploymenton |
+| Milan Kumar |Frontend and Presentation |
+
+---
+
+# 1️⃣5️⃣ Future Scope & Scalability
+
+## Short-Term
+- Add Autoencoder-based anomaly detection  
+- Improve merchant classification  
+- Add dynamic contamination tuning  
+
+## Long-Term
+- Multi-bank integration  
+- Real-time transaction monitoring  
+- Mobile app integration  
+- AI-based financial advisory system  
+
+---
+
+# 1️⃣6️⃣ Known Limitations
+
+- Requires minimum transaction history for stable baseline  
+- Location-based anomaly depends on data availability  
+- PDF parsing may vary by bank format  
+- No real-time bank API integration yet  
+
+---
+
+# 1️⃣7️⃣ Impact
+
+- Improves personal financial awareness  
+- Reduces unnoticed abnormal spending  
+- Encourages proactive financial monitoring  
+- Provides explainable AI insights instead of black-box alerts  
+
+---
+
+# 🎯 Final Positioning Statement
+
+Personal Finance Anomaly Detector is not a fraud system.
+
+It is a behavioral intelligence system for personal finance, designed to convert transaction logs into explainable, risk-scored financial insights.
