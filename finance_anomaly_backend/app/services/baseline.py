@@ -1,11 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
-from sqlalchemy.orm import Session
-
-from app.models import UserBaseline
 
 
 
@@ -61,37 +58,6 @@ def compute_baseline(df: pd.DataFrame) -> dict[str, Any]:
         "weekly_avg_spend": weekly_avg,
         "weekly_std_spend": weekly_std,
     }
-
-
-def save_baseline(db: Session, user_id: str, baseline_data: dict[str, Any]) -> UserBaseline:
-    existing: Optional[UserBaseline] = (
-        db.query(UserBaseline).filter(UserBaseline.user_id == user_id).first()
-    )
-    if existing:
-        existing.category_stats = baseline_data["category_stats"]
-        existing.merchant_stats = baseline_data["merchant_stats"]
-        existing.weekly_avg_spend = baseline_data["weekly_avg_spend"]
-        existing.weekly_std_spend = baseline_data["weekly_std_spend"]
-        existing.updated_at = datetime.now(timezone.utc)
-        db.commit()
-        db.refresh(existing)
-        return existing
-
-    baseline = UserBaseline(
-        user_id=user_id,
-        category_stats=baseline_data["category_stats"],
-        merchant_stats=baseline_data["merchant_stats"],
-        weekly_avg_spend=baseline_data["weekly_avg_spend"],
-        weekly_std_spend=baseline_data["weekly_std_spend"],
-    )
-    db.add(baseline)
-    db.commit()
-    db.refresh(baseline)
-    return baseline
-
-
-def load_baseline(db: Session, user_id: str) -> Optional[UserBaseline]:
-    return db.query(UserBaseline).filter(UserBaseline.user_id == user_id).first()
 
 
 def _total_weeks(df: pd.DataFrame) -> float:
