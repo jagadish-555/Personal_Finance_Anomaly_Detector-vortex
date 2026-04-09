@@ -1,8 +1,14 @@
 from typing import Any
+from dataclasses import dataclass
 
 import pandas as pd
 
-from app.schemas import AnomalyResult
+
+@dataclass
+class AnomalyResult:
+    transaction_id: int
+    risk_score: float
+    explanations: list[str]
 
 
 def generate_explanations(
